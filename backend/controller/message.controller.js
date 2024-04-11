@@ -25,6 +25,8 @@ export const sendMessage = async (req, res) => {
     if (newMessage) {
       conversation.message.push(newMessage._id);
     }
+    await Promise.all([conversation.save(), newMessage.save()]);
+
     res.status(201).json({ newMessage });
   } catch (error) {
     console.log("error in sendmessage controller:", error.message);
