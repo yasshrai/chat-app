@@ -4,11 +4,11 @@ import generateTokenAndSetCookie from "../utils/generateToken.js";
 
 export const signup = async (req, res) => {
   try {
-    const { fullName, username, password, confirmpassword, gender } = req.body;
-    if (password !== confirmpassword) {
+    const { fullName, userName, password, confirmPassword, gender } = req.body;
+    if (password !== confirmPassword) {
       res.status(400).json({ error: "password do not match" });
     }
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ userName });
     if (user) {
       return res.status(400).json({ error: "username alreay exists" });
     }
@@ -16,12 +16,12 @@ export const signup = async (req, res) => {
     const salt = await bcrypyt.genSalt(10);
     const hashedPassword = await bcrypyt.hash(password, salt);
 
-    const boyprofilepic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
-    const girlprofilepic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
+    const boyprofilepic = `https://avatar.iran.liara.run/public/boy?username=${userName}`;
+    const girlprofilepic = `https://avatar.iran.liara.run/public/girl?username=${userName}`;
 
     const newUser = new User({
       fullName,
-      username,
+      userName,
       password: hashedPassword,
       gender,
       profilePic: gender === "male" ? boyprofilepic : girlprofilepic,
@@ -32,7 +32,7 @@ export const signup = async (req, res) => {
       res.status(201).json({
         _id: newUser.id,
         fullName: newUser.fullName,
-        userName: newUser.username,
+        userName: newUser.userName,
         profilePic: newUser.profilePic,
       });
     } else {
@@ -48,7 +48,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ userName });
     const isPasswordCorrect = await bcrypyt.compare(
       password,
       user?.password || ""
@@ -60,7 +60,7 @@ export const login = async (req, res) => {
     generateTokenAndSetCookie(user._id, res);
     res.status(200).json({
       fullName: user.fullName,
-      username: user.username,
+      userName: user.userName,
       profilePic: user.profilePic,
     });
   } catch (error) {
