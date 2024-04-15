@@ -10,7 +10,7 @@ function handleInputError({
   gender,
 }) {
   if (!fullName || !userName || !password || !confirmPassword || !gender) {
-    toast.error("please fill al field");
+    toast.error("please fill all field");
     return false;
   }
 
