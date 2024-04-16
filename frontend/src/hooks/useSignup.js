@@ -2,6 +2,15 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
 
+function containsNumber(str) {
+  for (let char of str) {
+    if (!isNaN(parseInt(char))) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function handleInputError({
   fullName,
   userName,
@@ -18,11 +27,15 @@ function handleInputError({
     toast.error("password do not match");
     return false;
   }
-
-  if (password.length < 6) {
-    toast.error("password must be at least 6 characters ");
+  if (containsNumber(fullName)) {
+    toast.error("Name contain number");
     return false;
   }
+  if (fullName)
+    if (password.length < 6) {
+      toast.error("password must be at least 6 characters ");
+      return false;
+    }
   return true;
 }
 const useSignup = () => {
